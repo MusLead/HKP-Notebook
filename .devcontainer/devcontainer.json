@@ -1,14 +1,21 @@
 {
   "name": "HKP-Notebook",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": true,
       "installOhMyZsh": false,
       "upgradePackages": true
-    },
-    "ghcr.io/devcontainers/features/haskell:1": {}
+    }
   },
+
+  "postCreateCommand": "bash -lc 'set -euo pipefail; echo \"Installing GHCup...\"; curl --proto \"=https\" --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 sh; echo \"Loading GHCup environment...\"; test -f \"$HOME/.ghcup/env\" && source \"$HOME/.ghcup/env\"; export PATH=\"$HOME/.ghcup/bin:$PATH\"; echo \"Installing GHC (recommended)...\"; ghcup install ghc recommended; ghcup set ghc recommended; echo \"Installing Cabal (recommended)...\"; ghcup install cabal recommended; ghcup set cabal recommended; echo \"Haskell setup complete.\"'",
+
+  "remoteEnv": {
+    "PATH": "${containerEnv:HOME}/.ghcup/bin:${containerEnv:PATH}"
+  },
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,5 +24,6 @@
       ]
     }
   },
+
   "remoteUser": "vscode"
 }
