@@ -31,11 +31,20 @@ evalCase (Div x y) =
         Just m  -> safediv n m
 
 -- explicit bind
+-- since (>>=) :: m a -> (a -> m b) -> m b
 bindMaybe :: Maybe a -> (a -> Maybe b) -> Maybe b
 bindMaybe m f =
   case m of
     Nothing -> Nothing
     Just x  -> f x
+
+-- explicit bind version
+evalBindExplicit :: Expr -> Maybe Int
+evalBindExplicit (Val n) = Just n
+evalBindExplicit (Div x y) =
+  bindMaybe (evalBindExplicit x) $ \n ->
+    bindMaybe (evalBindExplicit y) $ \m ->
+      safediv n m
 
 -- >>= version
 evalBind :: Expr -> Maybe Int
