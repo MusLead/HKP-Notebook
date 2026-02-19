@@ -2,6 +2,10 @@
 -- Computherphile (21:50 Minutes):  https://youtu.be/t1e8gqXLbsU?si=D_km5tI2EhrFlhIB
 -- A Byte of Code (2:30 Minutes): https://youtu.be/VgA4wCaxp-Q?si=HK1InfYfWahIJFBe
 
+-- Below is an example of a simple expression language with division.
+-- We want to evaluate expressions, but division by zero is a problem. This creates a side effect (failure) that we need to handle. 
+-- We will use the Maybe monad to handle this possibility of failure gracefully.
+
 -- In GHCI try (Do not forget the brackets!):
 -- eval (Val 2)
 -- eval (Div (Val 10) (Val 2))
