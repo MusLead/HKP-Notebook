@@ -47,9 +47,9 @@ bindMaybe m f =
 evalBindExplicit :: Expr -> Maybe Int
 evalBindExplicit (Val n) = Just n
 evalBindExplicit (Div x y) =
-  bindMaybe (evalBindExplicit x) $ \n ->
-    bindMaybe (evalBindExplicit y) $ \m ->
-      safediv n m
+  bindMaybe (evalBindExplicit x) (\n ->
+    bindMaybe (evalBindExplicit y) (\m ->
+      safediv n m))
 
 -- >>= version
 evalBind :: Expr -> Maybe Int
@@ -60,9 +60,22 @@ evalBind (Div x y) =
       safediv n m))
 
 -- do notation version
+-- do-notation is basically a safe let for computations that may fail. 
 eval :: Expr -> Maybe Int
-eval (Val n) = return n
+-- return is a way to lift a pure value into the MONAD. 
+-- In this case, it takes an Int and returns a Maybe Int (specifically Just n).
+eval (Val n) = return n -- return :: a -> m a, automaticale ly wraps the pure value n into the Maybe monad.
 eval (Div x y) = do
-  n <- eval x
+  n <- eval x 
   m <- eval y
   safediv n m
+
+-- Comparison without do notation (evalPure)
+evalPure :: Expr -> Int
+evalPure (Val n) = n -- without return, we just return the pure value directly.
+evalPure (Div x y) =
+  let n = evalPure x
+      m = evalPure y
+  in if m == 0
+        then error "division by zero"
+        else n `div` m
