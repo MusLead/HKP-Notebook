@@ -34,7 +34,8 @@ evalCase (Div x y) =
         Nothing -> Nothing
         Just m  -> safediv n m
 
--- explicit bind
+-- explicit bind. This is what >>= does under the hood. 
+-- We will see how to use >>= to simplify this code.
 -- since (>>=) :: m a -> (a -> m b) -> m b
 bindMaybe :: Maybe a -> (a -> Maybe b) -> Maybe b
 bindMaybe m f =
