@@ -79,3 +79,15 @@ evalPure (Div x y) =
   in if m == 0
         then error "division by zero"
         else n `div` m
+
+-- IO Monad Example
+main                    :: IO ()
+main                    =  do c <- getChar
+                              putChar c
+
+seq_ :: [IO ()] -> IO ()
+seq_ []     = return ()
+seq_ (a:as) = a >> seq_ as
+
+putStr                  :: String -> IO ()
+putStr s                =  seq_ (map putChar s)
