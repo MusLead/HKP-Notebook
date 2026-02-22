@@ -1,0 +1,28 @@
+filter	(a -> Bool) -> [a] -> [a] | keeps elements that satisfy predicate
+take	Int -> [a] -> [a] | first n elements
+(++)	[a] -> [a] -> [a] | concatenates lists
+(:)	a -> [a] -> [a] | prepend element to list (fast)
+(!!)	[a] -> Int -> a | element at index (0-based, partial)
+head	[a] -> a | first element (crashes on empty)
+tail	[a] -> [a] | list without first element (partial)
+last	[a] -> a | last element (partial)
+init	[a] -> [a] | list without last element (partial)
+drop	Int -> [a] -> [a] | removes first n elements
+reverse	[a] -> [a] | reverses list
+zip	[a] -> [b] -> [(a,b)] | pairs elements until shortest list ends
+unzip	[(a,b)] -> ([a],[b]) | splits pairs into two lists
+($)	(a -> b) -> a -> b | low precedence function application
+(.)	(b -> c) -> (a -> b) -> a -> c | function composition (g then f)
+flip	(a -> b -> c) -> b -> a -> c | swaps first two arguments
+map	(a -> b) -> [a] -> [b] | applies function to each element
+foldr	(a -> b -> b) -> b -> [a] -> b | right associative fold
+foldl	(b -> a -> b) -> b -> [a] -> b | left associative fold
+foldr1	(a -> a -> a) -> [a] -> a | foldr without start value (non-empty)
+foldl1	(a -> a -> a) -> [a] -> a | foldl without start value (non-empty)
+putChar	Char -> IO () | prints one character
+getChar	IO Char | reads one character
+getLine	IO String | reads one line
+putStrLn	String -> IO () | prints string + newline
+writeFile	FilePath -> String -> IO () | writes file (overwrite)
+readFile	FilePath -> IO String | reads file contents
+return	a -> m a | lifts pure value into monad
