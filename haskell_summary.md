@@ -471,6 +471,7 @@ foldl1 max [3,7,2] = (max (max 3 7) 2) = max 7 2 = 7
 ```
 
 ---
+# IO
 
 ## IO functions with examples
 
