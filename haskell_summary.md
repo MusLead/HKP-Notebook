@@ -401,7 +401,7 @@ flip div 2 10
 
 ---
 
-# MAP AND FOLD
+# Extended Functions
 
 ---
 
@@ -469,6 +469,161 @@ Like foldl but uses first element as start.
 ```
 foldl1 max [3,7,2] = (max (max 3 7) 2) = max 7 2 = 7
 ```
+---
+
+## `elem`
+
+### Type
+
+```haskell
+elem :: Eq a => a -> [a] -> Bool
+```
+
+### Inputs
+
+* `x :: a` → element to search for
+* `xs :: [a]` → list
+* requires: `a` must be in `Eq` (because it uses `==`)
+
+### Output
+
+* `Bool`
+
+  * `True` if `x` occurs in the list
+  * `False` otherwise
+
+### What to expect
+
+* Checks equality using `(==)`
+* Stops when it finds the first match
+* Order does not matter
+* Works only if the element type supports equality
+
+### Examples
+
+```haskell
+elem 3 [1,2,3,4]       = True
+elem 5 [1,2,3,4]       = False
+elem "hi" ["hi","ok"]  = True
+```
+
+### Equivalent idea (recursive)
+
+```haskell
+elem' :: Eq a => a -> [a] -> Bool
+elem' _ [] = False
+elem' x (y:ys)
+  | x == y    = True
+  | otherwise = elem' x ys
+```
+
+---
+
+## `mapM`
+
+### Type
+
+```haskell
+mapM :: Monad m => (a -> m b) -> [a] -> m [b]
+```
+
+### Inputs
+
+* `f :: a -> m b` → function that returns a monadic value
+* `xs :: [a]` → list
+* requires: `m` must be a `Monad`
+
+### Output
+
+* `m [b]`
+
+### What to expect
+
+* Like `map`, but for functions that produce `IO`, `Maybe`, lists, etc.
+* Executes effects in order
+* Collects results inside the monad
+
+---
+
+### Compare with normal `map`
+
+Normal map:
+
+```haskell
+map  :: (a -> b)   -> [a] -> [b]
+mapM :: (a -> m b) -> [a] -> m [b]
+```
+
+The difference:
+
+* `map` → pure results
+* `mapM` → monadic results
+
+---
+
+### Example 1 — with IO
+
+```haskell
+main = mapM print [1,2,3]
+```
+
+**What happens**
+
+* prints 1
+* prints 2
+* prints 3
+* returns `IO [()]`
+
+Type reasoning:
+
+* `print :: Show a => a -> IO ()`
+* So `mapM print [1,2,3] :: IO [()]`
+
+---
+
+### Example 2 — with Maybe
+
+```haskell
+safeRecip :: Double -> Maybe Double
+safeRecip 0 = Nothing
+safeRecip x = Just (1/x)
+
+mapM safeRecip [2,4,8]
+-- Just [0.5,0.25,0.125]
+
+mapM safeRecip [2,0,8]
+-- Nothing
+```
+
+**Expectation**
+
+* If one element fails → whole result fails
+
+---
+
+## Example 3 — with List (nondeterminism)
+
+```haskell
+mapM (\x -> [x, -x]) [1,2]
+```
+
+Result:
+
+```haskell
+[[1,2],[1,-2],[-1,2],[-1,-2]]
+```
+
+Because list is also a Monad.
+
+---
+
+# Summary difference
+
+| Function | Type                         | Effect              |
+| -------- | ---------------------------- | ------------------- |
+| `map`    | `(a -> b) -> [a] -> [b]`     | Pure transformation |
+| `mapM`   | `(a -> m b) -> [a] -> m [b]` | Monadic sequencing  |
+| `elem`   | `Eq a => a -> [a] -> Bool`   | Membership check    |
 
 ---
 # IO
